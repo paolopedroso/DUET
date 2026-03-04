@@ -1,0 +1,5 @@
+icarus_sim
+vcd/*
+obj_dir/*
+schematics/*
+rtl/sandbox/*
