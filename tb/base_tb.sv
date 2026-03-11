@@ -152,10 +152,12 @@ module base_tb;
         stimulus_done = 0;
         same_phase    = 1;
         D = 0; E = 0; R = 0;
+        force Q_golden = '0;
         force Q_clkgate = '0;
         force Q_recirc = '0;
 
         #(period * 5);
+        release Q_golden;
         release Q_clkgate;
         release Q_recirc;
 
