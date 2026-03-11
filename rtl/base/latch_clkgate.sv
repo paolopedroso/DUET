@@ -15,6 +15,7 @@ module latch_clkgate
     wire latch_output;
     wire latched_en;
     wire latched_rst;
+    wire gated_rst;
 
 `ifdef _DFFE_PP_
     _DLATCH_P_ enable_latch_inst 
@@ -79,10 +80,8 @@ module latch_clkgate
     _DLATCH_PN0_ secondary_latch 
     (.D(D), .E(clk_1), .R(~R), .Q(latch_output));
     
-    assign mux_output = latch_output;
-    
     _DLATCH_PN0_ main_latch 
-    (.D(mux_output), .E(gated_clk_2_en), .R(~latched_rst), .Q(Q));
+    (.D(latch_output), .E(gated_clk_2_en), .R(~latched_rst), .Q(Q));
 
 `elsif _SDFF_PP0_
     assign latched_en = 1'b1;
@@ -135,8 +134,7 @@ module latch_clkgate
     _DLATCH_PN0_ main_latch 
     (.D(latch_output), .E(clk_2), .R(~latched_rst), .Q(Q));
 `elsif _SDFF_PN0_
-    assign latched_en = 1'b1;
-    
+
     _DLATCH_P_ latched_rst_inst 
     (.D(R), .Q(latched_rst), .E(clk_1));
     
@@ -150,8 +148,7 @@ module latch_clkgate
     (.D(mux_output), .E(clk_2), .Q(Q));
 
 `elsif _SDFF_PN1_
-    assign latched_en = 1'b1;
-    
+
     _DLATCH_P_ latched_rst_inst 
     (.D(R), .Q(latched_rst), .E(clk_1));
     
@@ -202,7 +199,87 @@ module latch_clkgate
     (.D(D), .E(clk_1), .R(R), .Q(latch_output));
 
     _DLATCH_PN0_ main_latch 
-    (.D(latch_output), .E(gated_clk_2_en), .R(R), .Q(Q));
+    (.D(latch_output), .E(gated_clk_2_en), .R(latched_rst), .Q(Q));
+
+`elsif _SDFFCE_PP0P_
+    _DLATCH_P_ enable_latch_inst 
+    (.D(E), .Q(latched_en), .E(clk_1));
+    
+    _DLATCH_P_ latched_rst_inst 
+    (.D(R), .Q(latched_rst), .E(clk_1));
+    
+    assign gated_clk_2_en = latched_en & clk_2;
+    
+    _DLATCH_P_ secondary_latch 
+    (.D(D), .E(clk_1), .Q(latch_output));
+
+    assign gated_rst = latched_en & latched_rst;
+
+    _MUX_ mux_rst_inst 
+    (.Y(mux_output), .A(latch_output), .B(1'b0), .S(gated_rst));    
+    
+    _DLATCH_P_ main_latch 
+    (.D(mux_output), .E(gated_clk_2_en), .Q(Q));
+
+`elsif _SDFFCE_PP1P_
+    _DLATCH_P_ enable_latch_inst 
+    (.D(E), .Q(latched_en), .E(clk_1));
+    
+    _DLATCH_P_ latched_rst_inst 
+    (.D(R), .Q(latched_rst), .E(clk_1));
+    
+    assign gated_clk_2_en = latched_en & clk_2;
+    
+    _DLATCH_P_ secondary_latch 
+    (.D(D), .E(clk_1), .Q(latch_output));
+
+    assign gated_rst = latched_en & latched_rst;
+
+    _MUX_ mux_rst_inst 
+    (.Y(mux_output), .A(latch_output), .B(1'b1), .S(gated_rst));    
+    
+    _DLATCH_P_ main_latch 
+    (.D(mux_output), .E(gated_clk_2_en), .Q(Q));
+
+`elsif _SDFFCE_PN0P_
+    _DLATCH_P_ enable_latch_inst 
+    (.D(E), .Q(latched_en), .E(clk_1));
+    
+    _DLATCH_P_ latched_rst_inst 
+    (.D(R), .Q(latched_rst), .E(clk_1));
+    
+    assign gated_clk_2_en = latched_en & clk_2;
+    
+    _DLATCH_P_ secondary_latch 
+    (.D(D), .E(clk_1), .Q(latch_output));
+
+    assign gated_rst = latched_en & latched_rst;
+
+    _MUX_ mux_rst_inst 
+    (.Y(mux_output), .A(1'b0), .B(latch_output), .S(gated_rst));    
+    
+    _DLATCH_P_ main_latch 
+    (.D(mux_output), .E(gated_clk_2_en), .Q(Q));
+
+
+`elsif _DFFE_PN1P_
+    _DLATCH_P_ enable_latch_inst 
+    (.D(E), .Q(latched_en), .E(clk_1));
+    
+    _DLATCH_P_ latched_rst_inst 
+    (.D(R), .Q(latched_rst), .E(clk_1));
+    
+    assign gated_clk_2_en = (latched_en | ~latched_rst) & clk_2;
+    assign gated_rst = gated_clk_2_en | ~latched_rst;
+
+    _DLATCH_P_ secondary_latch 
+    (.D(D), .E(clk_1), .Q(latch_output));
+
+    _MUX_ mux_rst_inst 
+    (.Y(mux_output), .A(1'b1), .B(latch_output), .S(latched_rst));    
+    
+    _DLATCH_P_ main_latch 
+    (.D(mux_output), .E(gated_rst), .Q(Q));
 
 `else
     _DLATCH_P_ enable_latch_inst 

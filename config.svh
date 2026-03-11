@@ -18,6 +18,8 @@
 `define IS_SDFFCE_PN0P 0
 `define IS_DFFE_PN0P   0
 `define IS_DFFE_PN1P   0
+`define IS_SDFFCE_PP0P 0
+`define IS_SDFFCE_PP1P 0
 
 `ifdef _DFFE_PP0P_
   `undef IS_DFFE_PP0P
@@ -67,6 +69,12 @@
 `elsif _DFFE_PN1P_
   `undef IS_DFFE_PN1P
   `define IS_DFFE_PN1P 1
+`elsif _SDFFCE_PP0P_
+  `undef IS_SDFFCE_PP0P
+  `define IS_SDFFCE_PP0P 1
+`elsif _SDFFCE_PP1P_
+  `undef IS_SDFFCE_PP1P
+  `define IS_SDFFCE_PP1P 1
 `endif
 
 `endif

@@ -1,10 +1,10 @@
 MKFILE_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 CONFIGS = _DFFE_PP_ _SDFFE_PN0P_ _SDFFE_PP0P_ _SDFF_PP0_ _SDFF_PP1_ _DFFE_PP0P_ \
-	_SDFF_PN1_ _SDFF_PN0_ _DFF_PP0_ _DFF_N_
+	_SDFF_PN1_ _SDFF_PN0_ _DFF_PP0_ _DFF_N_ _DFF_NN0_ _DFFE_PN0P_
 
 # TODO: only verified through clkgate
-CONFIGS+= _DFF_PN1_ _DFF_NN0_ _SDFFCE_PN0P_ _DFFE_PN0P_ _DFFE_PN1P_
+CONFIGS+= _DFF_PN1_ _SDFFCE_PN0P_ _DFFE_PN1P_ _SDFFCE_PP0P_ _SDFFCE_PP1P_
 
 PLATFORM ?= sky130hd
 
@@ -35,6 +35,8 @@ define run_tb
 	CONFIG=$(3) \
 	$(MAKE) --no-print-directory _do_sim
 endef
+
+DIR=$(TB)
 
 $(CONFIGS):
 ifdef TB

@@ -104,6 +104,46 @@ generate
             ,.E(E)
             ,.Q(Q)
         );
+    end else if (`IS_SDFFCE_PP0P) begin : gen_sdffce_pp0p
+        _SDFFCE_PP0P_ sdffce_inst (
+            .D(D)
+            ,.C(C)
+            ,.R(R)
+            ,.E(E)
+            ,.Q(Q)
+        );
+    end else if (`IS_SDFFCE_PP1P) begin : gen_sdffce_pp1p
+        _SDFFCE_PP1P_ sdffce_inst (
+            .D(D)
+            ,.C(C)
+            ,.R(R)
+            ,.E(E)
+            ,.Q(Q)
+        );
+    end else if (`IS_DFFE_PN1P) begin : gen_dffe_pn1p
+        _DFFE_PN1P_ sdffce_inst (
+            .D(D)
+            ,.C(C)
+            ,.R(R)
+            ,.E(E)
+            ,.Q(Q)
+        );
+    end else if (`IS_DFFE_PN0P) begin : gen_dffe_pn0p
+        _DFFE_PN0P_ sdffce_inst (
+            .D(D)
+            ,.C(C)
+            ,.R(R)
+            ,.E(E)
+            ,.Q(Q)
+        );
+    end else if (`IS_SDFFCE_PN0P) begin : gen_sdffce_pn0p
+        _SDFFCE_PN0P_ sdffce_inst (
+            .D(D)
+            ,.C(C)
+            ,.R(R)
+            ,.E(E)
+            ,.Q(Q)
+        );
     end else begin
         initial $fatal(1,"Not implemented.");
     end
